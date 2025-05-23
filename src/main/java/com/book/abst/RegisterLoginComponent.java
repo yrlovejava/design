@@ -1,6 +1,6 @@
 package com.book.abst;
 
-import com.book.function.RegisterLoginFuncInterface;
+import com.book.bridge.function.RegisterLoginFuncInterface;
 import com.book.pojo.UserInfo;
 
 import javax.servlet.http.HttpServletRequest;

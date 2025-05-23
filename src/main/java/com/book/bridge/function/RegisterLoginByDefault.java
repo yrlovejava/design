@@ -1,12 +1,10 @@
-package com.book.function;
+package com.book.bridge.function;
 
-import com.book.bridge.func.RegisterLoginFunc;
 import com.book.pojo.UserInfo;
 import com.book.repo.UserRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -20,21 +18,12 @@ public class RegisterLoginByDefault extends RegisterLoginFunc implements Registe
 
     @Override
     public String login(String account, String password) {
-        UserInfo userInfo = userRepository.findByUserNameAndUserPassword(account, password);
-        if(userInfo == null){
-            return "account / password error";
-        }
-        return "login success";
+        return super.commonLogin(account,password,userRepository);
     }
 
     @Override
     public String register(UserInfo userInfo) {
-        if(checkUserExists(userInfo.getUserName())){
-            throw new RuntimeException("user already registered");
-        }
-        userInfo.setCreateDate(new Date());
-        userRepository.save(userInfo);
-        return "register success!";
+        return super.commonRegister(userInfo,userRepository);
     }
 
     //根据用户账号名称检查用户是否已注册

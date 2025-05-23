@@ -1,4 +1,4 @@
-package com.book.function;
+package com.book.bridge.function;
 
 import com.book.pojo.UserInfo;
 
