@@ -1,6 +1,8 @@
 package com.book.bridge.function;
 
 import com.alibaba.fastjson.JSONObject;
+import com.book.abst.factory.RegisterLoginComponentFactory;
+import com.book.common.enums.LoginTypeEnum;
 import com.book.pojo.UserInfo;
 import com.book.repo.UserRepository;
 import com.book.utils.HttpClientUtils;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -17,6 +20,11 @@ import java.util.Date;
  */
 @Component
 public class RegisterLoginByGitee extends RegisterLoginFunc implements RegisterLoginFuncInterface {
+
+    @PostConstruct
+    private void initFunMap(){
+        RegisterLoginComponentFactory.funcMap.put(LoginTypeEnum.GITEE.getLoginType(), this);
+    }
 
     @Value("${gitee.state}")
     private String giteeState;
@@ -58,7 +66,7 @@ public class RegisterLoginByGitee extends RegisterLoginFunc implements RegisterL
     //自动登录和注册
     private String autoRegister3rdAndLogin(String userName, String password) {
         //如果第三方账号登录过.直接登录，此时用户名有前缀了，不用担心重复
-        if (super.checkUserExists(userName)) {
+        if (super.commonCheckUserExists(userName,userRepository)) {
             return super.commonLogin(userName, password,userRepository);
         }
         //如果是第一次登录，则先注册,再登录
