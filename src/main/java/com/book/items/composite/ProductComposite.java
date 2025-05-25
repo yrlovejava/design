@@ -23,12 +23,12 @@ public class ProductComposite extends AbstractProductItem {
     private List<AbstractProductItem> child = new ArrayList<>();
 
     @Override
-    protected void addProductItem(AbstractProductItem item) {
+    public void addProductItem(AbstractProductItem item) {
        this.child.add(item);
     }
 
     @Override
-    protected void delProductChild(AbstractProductItem item) {
+    public void delProductChild(AbstractProductItem item) {
         if(!(item instanceof ProductComposite removeItem)){
             throw new UnsupportedOperationException("Not Support child remove!");
         }

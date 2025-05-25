@@ -9,7 +9,7 @@ public abstract class AbstractProductItem {
      * 增加商品类目
      * @param item 商品类目
      */
-    protected void addProductItem(AbstractProductItem item){
+    public void addProductItem(AbstractProductItem item){
         throw new UnsupportedOperationException("Not Support child add!");
     }
 
@@ -17,7 +17,7 @@ public abstract class AbstractProductItem {
      * 移除商品类目
      * @param item 商品类目
      */
-    protected void delProductChild(AbstractProductItem item){
+    public void delProductChild(AbstractProductItem item){
         throw new UnsupportedOperationException("Not Support child remove!");
     }
 }
