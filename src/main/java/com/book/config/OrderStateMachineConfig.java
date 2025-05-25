@@ -2,11 +2,17 @@ package com.book.config;
 
 import com.book.ordermanagement.state.OrderState;
 import com.book.ordermanagement.state.OrderStateChangeAction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.statemachine.config.EnableStateMachine;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
+import org.springframework.statemachine.persist.RepositoryStateMachinePersist;
+import org.springframework.statemachine.redis.RedisStateMachineContextRepository;
+import org.springframework.statemachine.redis.RedisStateMachinePersister;
 
 import java.util.EnumSet;
 
@@ -16,6 +22,9 @@ import java.util.EnumSet;
 @Configuration
 @EnableStateMachine(name = "OrderStateMachine")
 public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<OrderState, OrderStateChangeAction> {
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
     /**
      * 配置订单状态机初始化
@@ -49,5 +58,16 @@ public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<Order
                 .withExternal().source(OrderState.ORDER_WAIT_RECEIVE)
                 .target(OrderState.ORDER_FINISH)
                 .event(OrderStateChangeAction.RECEIVE_ORDER);
+    }
+
+    /**
+     * 获取redis持久化对象
+     * @return redis持久化对象
+     */
+    @Bean(name = "stateMachineRedisPersister")
+    public RedisStateMachinePersister<OrderState,OrderStateChangeAction> getRedisPersister(){
+        RedisStateMachineContextRepository<OrderState, OrderStateChangeAction> repository = new RedisStateMachineContextRepository<>(redisConnectionFactory);
+        RepositoryStateMachinePersist<OrderState, OrderStateChangeAction> persist = new RepositoryStateMachinePersist<>(repository);
+        return new RedisStateMachinePersister<>(persist);
     }
 }
