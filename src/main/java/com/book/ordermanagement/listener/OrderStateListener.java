@@ -1,5 +1,7 @@
 package com.book.ordermanagement.listener;
 
+import com.book.ordermanagement.command.OrderCommand;
+import com.book.ordermanagement.command.invoker.OrderCommandInvoker;
 import com.book.ordermanagement.state.OrderState;
 import com.book.ordermanagement.state.OrderStateChangeAction;
 import com.book.pojo.Order;
@@ -20,6 +22,9 @@ public class OrderStateListener {
     @Autowired
     private RedisCommonProcessor redisCommonProcessor;
 
+    @Autowired
+    private OrderCommand orderCommand;
+
     /**
      * 订单等待支付状态 -> 订单等待发出状态
      * @param message 消息
@@ -36,6 +41,8 @@ public class OrderStateListener {
         order.setOrderState(OrderState.ORDER_WAIT_SEND);
         redisCommonProcessor.set(order.getOrderId(), order);
         //命令模式相关处理
+        OrderCommandInvoker invoker = new OrderCommandInvoker();
+        invoker.invoke(orderCommand,order);
         return true;
     }
 
@@ -52,8 +59,8 @@ public class OrderStateListener {
         }
         order.setOrderState(OrderState.ORDER_WAIT_RECEIVE);
         redisCommonProcessor.set(order.getOrderId(), order);
-//        new OrderCommandInvoker().invoke(orderCommand, order );
-        //命令模式进行相关处理（本章4.10节和4.11节进行实现）
+        OrderCommandInvoker invoker = new OrderCommandInvoker();
+        invoker.invoke(orderCommand,order);
         return true;
     }
 
@@ -72,8 +79,8 @@ public class OrderStateListener {
         redisCommonProcessor.remove(order.getOrderId());
         //移除状态机信息
         redisCommonProcessor.remove(order.getOrderId() + "STATE");
-//        new OrderCommandInvoker().invoke(orderCommand, order);
-        //命令模式进行相关处理（本章4.10节和4.11节进行实现）
+        OrderCommandInvoker invoker = new OrderCommandInvoker();
+        invoker.invoke(orderCommand,order);
         return true;
     }
 }
