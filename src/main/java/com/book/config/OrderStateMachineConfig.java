@@ -20,7 +20,7 @@ import java.util.EnumSet;
  * 订单状态机配置类
  */
 @Configuration
-@EnableStateMachine(name = "OrderStateMachine")
+@EnableStateMachine(name = "orderStateMachine")
 public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<OrderState, OrderStateChangeAction> {
 
     @Autowired
