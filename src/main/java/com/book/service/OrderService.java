@@ -4,6 +4,7 @@ import com.book.ordermanagement.command.OrderCommand;
 import com.book.ordermanagement.command.invoker.OrderCommandInvoker;
 import com.book.ordermanagement.state.OrderState;
 import com.book.ordermanagement.state.OrderStateChangeAction;
+import com.book.pay.facade.PayFacade;
 import com.book.pojo.Order;
 import com.book.utils.RedisCommonProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class OrderService {
     @Autowired
     private OrderCommand orderCommand;
 
+    @Autowired
+    private PayFacade payFacade;
+
     public Order createOrder(String productId) {
         String orderId = "OID" + productId;
         Order order = Order.builder()
@@ -44,6 +48,13 @@ public class OrderService {
         OrderCommandInvoker invoker = new OrderCommandInvoker();
         invoker.invoke(orderCommand,order);
         return order;
+    }
+
+    //支付调用逻辑
+    public String getPayUrl(String orderId, Float price, Integer payType) {
+        Order order = (Order) redisCommonProcessor.get(orderId);
+        order.setPrice(price);
+        return payFacade.pay(order,payType);
     }
 
     public Order pay(String orderId) {
