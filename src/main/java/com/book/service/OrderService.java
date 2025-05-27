@@ -46,7 +46,7 @@ public class OrderService {
         return order;
     }
 
-    public Order payOrder(String orderId) {
+    public Order pay(String orderId) {
         // 从redis中获取订单
         Order order = (Order) redisCommonProcessor.get(orderId);
 
