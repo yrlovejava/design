@@ -16,7 +16,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/business/launch")
-    public List<BusinessLaunch> filterBusinessLaunch(@RequestParam("city") String city, @RequestParam("sex") String sex, @RequestParam("product") String product){Add commentMore actions
+    public List<BusinessLaunch> filterBusinessLaunch(@RequestParam("city") String city, @RequestParam("sex") String sex, @RequestParam("product") String product){
         return userService.filterBusinessLaunch(city,sex,product);
     }
 }
